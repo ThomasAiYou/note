@@ -150,3 +150,5 @@ reduce task的launch数量通过mapreduce.job.reduces设置，默认值是1。�
 
 [参考资料]：(https://blog.csdn.net/aijiudu/article/details/72353510)
 
+[参考资料] : (https://zhuanlan.zhihu.com/p/134124471)
+

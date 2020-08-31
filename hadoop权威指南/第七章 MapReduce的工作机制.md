@@ -62,7 +62,7 @@
 
 若application master发现已经有一段时间没有收到任务进度更新，将会标记任务失败，并且JVM进程将会被杀死(mapreduce.task.timeout)指定。
 
-application master会自动尝试失败的任务，尝试次数由mapreduce.map.maxattempts和mapreduce.reduce.maxattempts属性控制。
+application master会自动尝试失败的任务，并且会尽量避免在以前失败过的结点管理器上重新调度该任务，尝试次数由mapreduce.map.maxattempts和mapreduce.reduce.maxattempts属性控制。
 
 对于一些应用不希望少数几个任务失败终止所有作业，可设置mapreduce.map.failures.maxpercent来设定接受允许最大失败百分比。      
 
@@ -88,15 +88,15 @@ application master向资源管理器周期性发送心跳，当application maste
 
 ### 7.3.1 map端
 
- map函数开始产生输出时，并不是简单的将它写到磁盘，他利用缓冲的方式写到内存并出于效率的考虑进行预排序。
+​		 map函数开始产生输出时，并不是简单的将它写到磁盘，他利用缓冲的方式写到内存并出于效率的考虑进行预排序。
 
 ![截屏2020-04-16上午10.46.37](/Users/denakira/Desktop/myworkspace/note/hadoop权威指南/picture/截屏2020-04-16上午10.46.37.png)
 
-每个map任务都有一个环形内存缓冲区用于存储任务输出。默认情况下，缓冲区大小为100MB(mapreduce.task.io.sort.mb)，一旦缓冲区内容达到阈值(mapreduce.map.sort.spill.percent)默认0.8一个后台线程便开始把内容溢出到磁盘。在溢出写到磁盘过程中，map输出继续写到缓冲区，但如果此期间缓冲区被填满，map会被阻塞，直到写磁盘过程完成。溢出写过程按轮询的方式将缓冲区中的内容写到mapreduce.cluster.local.dir属性在作业特定子目录下指定的目录中。
+​	每个map任务都有一个环形内存缓冲区用于存储任务输出。默认情况下，缓冲区大小为100MB(mapreduce.task.io.sort.mb)，一旦缓冲区内容达到阈值(mapreduce.map.sort.spill.percent)默认0.8一个后台线程便开始把内容溢出到磁盘。在溢出写到磁盘过程中，map输出继续写到缓冲区，但如果此期间缓冲区被填满，map会被阻塞，直到写磁盘过程完成。溢出写过程按轮询的方式将缓冲区中的内容写到mapreduce.cluster.local.dir属性在作业特定子目录下指定的目录中。
 
 在写磁盘之前，线程首先根据数据最终要传的reducer把数据划分成相应的partition，在每个分区中后台线程根据键在内存中进行排序。
 
-### 7.3.2 reudce端
+### 7.3.2 reduce端
 
 ![](/Users/denakira/Desktop/myworkspace/note/hadoop权威指南/picture/20190716185316790.png)
 

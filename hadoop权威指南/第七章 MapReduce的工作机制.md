@@ -16,9 +16,11 @@
 
 ![](/Users/denakira/Desktop/myworkspace/note/hadoop权威指南/picture/u=2505986884,3554737584&fm=26&gp=0.jpg)
 
+
+
 ### 7.1.1 作业的提交
 
-> Job的submit()方法创建一个内部的JobSummiter实例，并且调用其submitJobInteral()方法，提交作业后，waitForCompletion()每秒轮询作业的进度。
+> Job的submit()方法创建一个内部的JobSummiter实例，并且调用其submitJobInternal()方法，提交作业后，waitForCompletion()每秒轮询作业的进度。
 
 **JobSummiter作业提交过程**
 
@@ -27,6 +29,8 @@
 2.submitter提交器将jar提交到由jobStagingArea和JobID拼接而成的地址，默认写入10份(mapreduce.client.submit.file.replication)通过copyAndConfigureFiles提交到hdfs
 
 3.通过资源管理器的submitApplication方法提交作业。
+
+
 
 ### 7.1.2 作业的初始化
 
@@ -102,7 +106,7 @@ application master向资源管理器周期性发送心跳，当application maste
 
 每个map任务的完成时间可能不同，因此在每个任务完成时，reduce任务就开始复制其输出，因此能够并行取得map输出(mapreduce.reduce.shuffle.parallelcopies)设置，默认5。
 
-复制完所有map输出后，reduce人物进入排序阶段，这个阶段将合并map输出，维持其顺序排序，然后将数据输入至reduce函数。
+复制完所有map输出后，reduce任务进入排序阶段，这个阶段将合并map输出，维持其顺序排序，然后将数据输入至reduce函数。
 
 ### 7.3.3 配置调优
 
@@ -144,7 +148,7 @@ protected long computeSplitSize(long goalSize, long minSize, long blockSize) {
 
 ### 7.4.2 reduce task数量
 
-reduce task的launch数量通过mapreduce.job.reduces设置，默认值是1。但若设置的值为a，partitioner返回值个数为b，若a>b则有a-b个reduce浪费。
+​		reduce task的launch数量通过mapreduce.job.reduces设置，默认值是1。但若设置的值为a，partitioner返回值个数为b，若a>b则有a-b个reduce浪费。
 
 ### 7.4.3 参考资料
 
